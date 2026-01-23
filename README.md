@@ -89,7 +89,7 @@ dependencies: [
 Add the following to your `Podfile`:
 
 ```ruby
-pod 'DiditSDK', '~> 0.0.1'
+pod 'DiditSDK', :podspec => 'https://raw.githubusercontent.com/didit-protocol/didit-sdk-ios/main/DiditSDK.podspec'
 ```
 
 Then run:
@@ -98,12 +98,17 @@ Then run:
 pod install
 ```
 
+> **Note:** Open the `.xcworkspace` file (not `.xcodeproj`) after running `pod install`.
+
 ### Manual (XCFramework)
 
-1. Download `DiditSDK.xcframework` from the [Releases](https://github.com/didit-protocol/didit-sdk-ios/releases) page
-2. Drag the framework into your Xcode project
-3. In your target's **General** tab, ensure it's listed under **Frameworks, Libraries, and Embedded Content**
-4. Set the embed option to **Embed & Sign**
+1. Download both frameworks from the [Releases](https://github.com/didit-protocol/didit-sdk-ios/releases) page:
+   - `DiditSDK.xcframework.zip`
+   - `OpenSSL.xcframework.zip`
+2. Extract both zip files
+3. Drag both `.xcframework` folders into your Xcode project
+4. In your target's **General** tab, ensure both are listed under **Frameworks, Libraries, and Embedded Content**
+5. Set the embed option to **Embed & Sign** for both frameworks
 
 ## Quick Start
 
@@ -111,7 +116,7 @@ pod install
 
 ```swift
 import SwiftUI
-import DiditSDK
+import didit_sdk
 
 struct ContentView: View {
     var body: some View {
@@ -338,7 +343,7 @@ Each result includes a `SessionData` object:
 
 ```swift
 import SwiftUI
-import DiditSDK
+import didit_sdk
 
 struct HomeView: View {
     @State private var resultMessage: String?
