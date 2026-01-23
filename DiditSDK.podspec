@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DiditSDK'
-  s.version          = '0.0.2'
+  s.version          = '0.0.3'
   s.summary          = 'Didit Identity Verification SDK for iOS'
   s.description      = <<-DESC
     The Didit SDK provides a complete identity verification solution including
@@ -11,17 +11,14 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Didit' => 'support@didit.me' }
   s.source           = { 
-    :http => 'https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.2/DiditSDK.xcframework.zip'
+    :http => 'https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.3/DiditSDK-CocoaPods.zip'
   }
 
   s.ios.deployment_target = '15.0'
   s.swift_version = '5.0'
   
-  # Use the pre-built XCFramework
-  s.vendored_frameworks = 'DiditSDK.xcframework'
-  
-  # Dependencies - users need to install these
-  s.dependency 'NFCPassportReader', '~> 2.3'
+  # Use the pre-built XCFrameworks (includes OpenSSL for NFC)
+  s.vendored_frameworks = 'DiditSDK.xcframework', 'OpenSSL.xcframework'
   
   # Required frameworks
   s.frameworks = 'UIKit', 'SwiftUI', 'AVFoundation', 'CoreNFC', 'CoreLocation'
