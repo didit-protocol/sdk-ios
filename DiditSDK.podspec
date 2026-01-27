@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DiditSDK'
-  s.version          = '0.0.5'
+  s.version          = '0.0.6'
   s.summary          = 'Didit Identity Verification SDK for iOS'
   s.description      = <<-DESC
     The Didit SDK provides a complete identity verification solution including
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Didit' => 'support@didit.me' }
   s.source           = { 
-    :http => 'https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.5/DiditSDK-CocoaPods.zip'
+    :http => 'https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.6/DiditSDK-CocoaPods.zip'
   }
 
   s.ios.deployment_target = '15.0'

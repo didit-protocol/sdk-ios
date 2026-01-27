@@ -17,13 +17,13 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "DiditSDKBinary",
-            url: "https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.5/DiditSDK.xcframework.zip",
-            checksum: "b528809b1e251b840195cdd2721004fad4739bf411829fe8dbdb18fb34bd1a51"
+            url: "https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.6/DiditSDK.xcframework.zip",
+            checksum: "ba04a24bf74dae491063012a8f931ad680642a1388f8bc90038b316be840af65"
         ),
         .binaryTarget(
             name: "OpenSSLBinary",
-            url: "https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.5/OpenSSL.xcframework.zip",
-            checksum: "796998b2094046d09b6e0fac98ff564405270b02267cadeb26b663a2d08c1a41"
+            url: "https://github.com/didit-protocol/didit-sdk-ios/releases/download/0.0.6/OpenSSL.xcframework.zip",
+            checksum: "5832b2048e4aaab88e7837b0e7dc8b835a2903832c9bd88b0c6158ed13f9e2fa"
         )
     ]
 )
