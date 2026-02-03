@@ -4,9 +4,18 @@ A lightweight iOS SDK for identity verification. Server-driven, minimal configur
 
 ## Requirements
 
-- iOS 15.0+
+- iOS 13.0+ (NFC passport reading requires iOS 15.0+)
 - Xcode 15.0+
 - Swift 5.9+
+
+### iOS Version Compatibility
+
+| iOS Version | Features Available |
+|-------------|-------------------|
+| iOS 13.0 - 14.x | All features **except** NFC passport reading |
+| iOS 15.0+ | All features including NFC passport reading |
+
+> **Note:** When installing via CocoaPods on apps targeting iOS 13/14, you may see a warning about `NFCPassportReader` requiring iOS 14+. This warning can be safely ignored - the SDK will work correctly, and NFC functionality is automatically disabled on older iOS versions.
 
 ## Permissions
 
@@ -78,7 +87,7 @@ Add the package to your project using Xcode:
 1. Go to **File > Add Package Dependencies**
 2. Enter the repository URL:
    ```
-   https://github.com/didit-protocol/didit-sdk-ios.git
+   https://github.com/didit-protocol/sdk-ios.git
    ```
 3. Select the version and click **Add Package**
 
@@ -86,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/didit-sdk-ios.git", from: "3.0.0")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.1.0")
 ]
 ```
 
@@ -95,7 +104,7 @@ dependencies: [
 Add the following to your `Podfile`:
 
 ```ruby
-pod 'DiditSDK', :podspec => 'https://raw.githubusercontent.com/didit-protocol/didit-sdk-ios/main/DiditSDK.podspec'
+pod 'DiditSDK', :podspec => 'https://raw.githubusercontent.com/didit-protocol/sdk-ios/main/DiditSDK.podspec'
 ```
 
 Then run:
@@ -118,7 +127,7 @@ If you encounter rsync permission errors like `Operation not permitted` when bui
 
 ### Manual (XCFramework)
 
-1. Download both frameworks from the [Releases](https://github.com/didit-protocol/didit-sdk-ios/releases) page:
+1. Download both frameworks from the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page:
    - `DiditSDK.xcframework.zip`
    - `OpenSSL.xcframework.zip`
 2. Extract both zip files

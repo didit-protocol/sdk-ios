@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "DiditSDK",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v13)
     ],
     products: [
         .library(
@@ -17,13 +17,13 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "DiditSDKBinary",
-            url: "https://github.com/didit-protocol/didit-sdk-ios/releases/download/3.0.1/DiditSDK.xcframework.zip",
-            checksum: "0fef7379af4fcc8a9f4d1098146fc82e9690d2dfee841d34c37dba350c502e36"
+            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.1.0/DiditSDK.xcframework.zip",
+            checksum: "4cc6906f0a2fc64f2433ebd64e95fe4e3e1ce672987645b155e51e2f5928f787"
         ),
         .binaryTarget(
             name: "OpenSSLBinary",
-            url: "https://github.com/didit-protocol/didit-sdk-ios/releases/download/3.0.1/OpenSSL.xcframework.zip",
-            checksum: "c926afaa304d376f1020da2cfafb1f9561c4f289d8980e0dd312202fb89e42d0"
+            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.1.0/OpenSSL.xcframework.zip",
+            checksum: "572a817280536b517520b702896911da12c5f829a20b9753e40e3f2a21209dcf"
         )
     ]
 )
