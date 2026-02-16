@@ -208,7 +208,6 @@ DiditSdk.shared.startVerification(
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `languageLocale` | `SupportedLanguage?` | Device locale | Force a specific language |
-| `customIntroScreen` | `Bool` | `false` | Skip SDK's intro screen |
 | `fontFamily` | `String?` | System font | Custom font family name |
 | `loggingEnabled` | `Bool` | `false` | Enable SDK debug logging |
 
