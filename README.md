@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.1.0")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.1.1")
 ]
 ```
 
