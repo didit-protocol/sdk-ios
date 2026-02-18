@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.1.1")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.0")
 ]
 ```
 
@@ -460,4 +460,4 @@ struct CustomView: View {
 
 ## License
 
-Copyright © 2025 Didit. All rights reserved.
+Copyright © 2026 Didit. All rights reserved.
