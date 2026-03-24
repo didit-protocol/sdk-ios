@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.1")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.4")
 ]
 ```
 
@@ -192,9 +192,11 @@ You can customize the SDK behavior using `DiditSdk.Configuration`:
 ```swift
 let configuration = DiditSdk.Configuration(
     languageLocale: .spanish,      // Force Spanish language
-    customIntroScreen: false,      // Use SDK's intro screen
     fontFamily: "Avenir",          // Custom font (must be registered in your app)
-    loggingEnabled: true           // Enable debug logging
+    loggingEnabled: true,          // Enable debug logging
+    showCloseButton: true,         // Show close (X) button on step screens
+    showExitConfirmation: true,    // Show confirmation dialog when user taps close
+    closeOnComplete: false         // Don't auto-dismiss on completion
 )
 
 DiditSdk.shared.startVerification(
@@ -208,8 +210,11 @@ DiditSdk.shared.startVerification(
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `languageLocale` | `SupportedLanguage?` | Device locale | Force a specific language |
-| `fontFamily` | `String?` | System font | Custom font family name |
+| `fontFamily` | `String?` | System font | Custom font family name (must be registered in Info.plist) |
 | `loggingEnabled` | `Bool` | `false` | Enable SDK debug logging |
+| `showCloseButton` | `Bool` | `true` | Show close (X) button on verification step screens |
+| `showExitConfirmation` | `Bool` | `true` | Show confirmation dialog when user attempts to exit |
+| `closeOnComplete` | `Bool` | `false` | Automatically dismiss verification UI when complete |
 
 ### Language Settings
 
@@ -254,56 +259,18 @@ let deviceLanguage = SupportedLanguage.fromDeviceLocale()
 | Japanese | `.japanese` | Chinese (Simplified) | `.chineseSimplified` |
 | Georgian | `.georgian` | Chinese (Traditional) | `.chineseTraditional` |
 
-## Advanced Options
+## Advanced Session Parameters
 
-### Contact Details (Prefill)
-
-Provide contact details to prefill verification forms and enable notifications:
+For advanced session parameters such as `contact_details`, `expected_details`, `metadata`, and `callback`, use the **Backend Session** method. Your backend calls [POST /v3/session/](https://docs.didit.me) with full parameters, then passes the `session_token` to the SDK:
 
 ```swift
-let contactDetails = ContactDetails(
-    email: "user@example.com",
-    sendNotificationEmails: true,  // Send status update emails
-    emailLang: "en",               // Email language
-    phone: "+14155552671"          // E.164 format
-)
-
-DiditSdk.shared.startVerification(
-    workflowId: "your-workflow-id",
-    contactDetails: contactDetails
-)
+// Your backend creates the session with all advanced parameters:
+// POST /v3/session/ with contact_details, expected_details, metadata, etc.
+// Then passes the session_token to the SDK:
+DiditSdk.shared.startVerification(token: sessionTokenFromBackend)
 ```
 
-### Expected Details (Cross-Validation)
-
-Provide expected user details for cross-validation with extracted data:
-
-```swift
-let expectedDetails = ExpectedDetails(
-    firstName: "John",
-    lastName: "Doe",
-    dateOfBirth: "1990-05-15",     // YYYY-MM-DD format
-    nationality: "USA",            // ISO 3166-1 alpha-3
-    country: "USA"
-)
-
-DiditSdk.shared.startVerification(
-    workflowId: "your-workflow-id",
-    expectedDetails: expectedDetails
-)
-```
-
-### Metadata
-
-Store custom JSON metadata with the session (not displayed to user):
-
-```swift
-DiditSdk.shared.startVerification(
-    workflowId: "your-workflow-id",
-    vendorData: "user-123",
-    metadata: "{\"internalId\": \"abc123\", \"source\": \"mobile\"}"
-)
-```
+> **Note:** The UniLink method (`startVerification(workflowId:)`) only supports `vendorData`. For any other session parameters, use the Backend Session method.
 
 ## Verification Results
 
@@ -396,8 +363,15 @@ struct HomeView: View {
     }
 
     private func startVerification() {
-        // Option A: With session token from your backend
-        let config = DiditSdk.Configuration(languageLocale: .english)
+        let config = DiditSdk.Configuration(
+            languageLocale: .english,
+            loggingEnabled: true,
+            showCloseButton: true,
+            showExitConfirmation: true,
+            closeOnComplete: false
+        )
+
+        // Option A: With session token from your backend (recommended)
         DiditSdk.shared.startVerification(
             token: "your-session-token",
             configuration: config
@@ -407,7 +381,6 @@ struct HomeView: View {
         // DiditSdk.shared.startVerification(
         //     workflowId: "your-workflow-id",
         //     vendorData: "user-123",
-        //     contactDetails: ContactDetails(email: "user@example.com"),
         //     configuration: config
         // )
     }
@@ -457,6 +430,19 @@ struct CustomView: View {
     }
 }
 ```
+
+## Changelog
+
+### 3.2.4
+- Signed XCFrameworks with Apple Distribution certificate (fixes ITMS-91065: Missing signature on App Store submission)
+- Force portrait orientation within the SDK regardless of host app settings
+- Fix consecutive same-type verification steps (e.g. liveness -> liveness) getting stuck
+- Fix "Continue" button becoming unresponsive on step screens due to coordinator re-initialization
+- Add missing language translations (Albanian, Bosnian, Kyrgyz)
+- Fix Configuration documentation (add showCloseButton, showExitConfirmation, closeOnComplete; remove incorrect parameters)
+
+### 3.2.3
+- Previous release
 
 ## License
 
