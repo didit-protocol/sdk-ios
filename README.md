@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.5")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.6")
 ]
 ```
 
@@ -432,6 +432,9 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.2.6
+- Sign inner .framework binaries within each XCFramework slice (fixes Xcode 26 Archive failure and ITMS-91065 for ios-arm64)
 
 ### 3.2.5
 - Add missing exit confirmation dialog translations for all 51 languages
