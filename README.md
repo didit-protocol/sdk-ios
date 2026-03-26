@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.6")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.7")
 ]
 ```
 
@@ -432,6 +432,12 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.2.7
+- Fix XCFramework signature seal consistency (resolves Xcode 26 Archive failure with `signature-collection failed`)
+- Remove stale code signatures before re-signing after bitcode stripping
+- Use `ditto` for zip archives to preserve code signature metadata
+- Add `--deep` signing and post-sign verification to build script
 
 ### 3.2.6
 - Sign inner .framework binaries within each XCFramework slice (fixes Xcode 26 Archive failure and ITMS-91065 for ios-arm64)
