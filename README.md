@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.7")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.8")
 ]
 ```
 
@@ -432,6 +432,10 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.2.8
+- Fix SPM/Xcode 26 Archive failure: use plain zip instead of ditto to avoid __MACOSX metadata that breaks signature seal on extraction
+- Verified: `codesign --verify --deep --strict` passes after both `unzip` and `ditto` extraction
 
 ### 3.2.7
 - Fix XCFramework signature seal consistency (resolves Xcode 26 Archive failure with `signature-collection failed`)
