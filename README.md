@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.9")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.10")
 ]
 ```
 
@@ -432,6 +432,11 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.2.10
+- Fix keyboard overlapping questionnaire inputs (use safeAreaInset for footer)
+- Fix tap-to-focus requiring double tap on inputs (replace simultaneousGesture with UIKit tap recognizer)
+- Add scroll-to-dismiss keyboard on questionnaire (scrollDismissesKeyboard)
 
 ### 3.2.9
 - Hide internal C++ symbols (OpenCV, MediaPipe, TFLite) to prevent linker collisions with other SDKs
