@@ -433,6 +433,11 @@ struct CustomView: View {
 
 ## Changelog
 
+### 3.2.11
+- Fix PDF file upload in questionnaire on iOS 26 (use modern UTType document picker API with iOS 13 fallback)
+- Fix document picker silently skipping files when security-scoped resource access returns false
+- Apply same UTType fix to proof-of-address document picker
+
 ### 3.2.10
 - Fix keyboard overlapping questionnaire inputs (use safeAreaInset for footer)
 - Fix tap-to-focus requiring double tap on inputs (replace simultaneousGesture with UIKit tap recognizer)
