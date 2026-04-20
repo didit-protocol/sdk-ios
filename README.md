@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.10")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.12")
 ]
 ```
 
@@ -437,6 +437,17 @@ struct CustomView: View {
 - Fix PDF file upload in questionnaire on iOS 26 (use modern UTType document picker API with iOS 13 fallback)
 - Fix document picker silently skipping files when security-scoped resource access returns false
 - Apply same UTType fix to proof-of-address document picker
+
+### 3.2.12
+- Face area threshold adjusted to 9% for optimal distance balance
+
+### 3.2.11
+- Tighten face detection thresholds for better capture quality
+- Require tight stability only for auto-capture (no more loose threshold)
+- Stricter frontal face check (nose offset 0.25, eye level 0.30)
+- Tighter position bands (32% horizontal, 48% vertical)
+- Higher ML confidence threshold (0.85)
+- Longer hold time (1.0s, 25 consecutive frames)
 
 ### 3.2.10
 - Fix keyboard overlapping questionnaire inputs (use safeAreaInset for footer)
