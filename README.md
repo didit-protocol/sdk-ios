@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.12")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.13")
 ]
 ```
 
@@ -437,6 +437,9 @@ struct CustomView: View {
 - Fix PDF file upload in questionnaire on iOS 26 (use modern UTType document picker API with iOS 13 fallback)
 - Fix document picker silently skipping files when security-scoped resource access returns false
 - Apply same UTType fix to proof-of-address document picker
+
+### 3.2.13
+- Pin dependency versions to prevent breaking upgrades (MediaPipeTasksVision 0.10.21, NFCPassportReader 2.1.2)
 
 ### 3.2.12
 - Face area threshold adjusted to 9% for optimal distance balance
