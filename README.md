@@ -218,7 +218,7 @@ DiditSdk.shared.startVerification(
 
 ### Language Settings
 
-The SDK supports 40+ languages. If no language is specified, the SDK uses the device locale with English fallback.
+The SDK supports 53 languages. If no language is specified, the SDK uses the device locale with English fallback.
 
 ```swift
 // Use device locale (default)
@@ -234,30 +234,34 @@ let deviceLanguage = SupportedLanguage.fromDeviceLocale()
 #### Supported Languages
 
 | Language | Value | Language | Value |
-|----------|-------|----------|-------|
-| English | `.english` | Korean | `.korean` |
-| Arabic | `.arabic` | Lithuanian | `.lithuanian` |
-| Bulgarian | `.bulgarian` | Latvian | `.latvian` |
-| Bengali | `.bengali` | Macedonian | `.macedonian` |
+|----------|------|----------|------|
+| Albanian | `.albanian` | Kazakh | `.kazakh` |
+| Arabic | `.arabic` | Korean | `.korean` |
+| Armenian | `.armenian` | Kyrgyz | `.kyrgyz` |
+| Bengali | `.bengali` | Latvian | `.latvian` |
+| Bosnian | `.bosnian` | Lithuanian | `.lithuanian` |
+| Bulgarian | `.bulgarian` | Macedonian | `.macedonian` |
 | Catalan | `.catalan` | Malay | `.malay` |
-| Czech | `.czech` | Dutch | `.dutch` |
-| Danish | `.danish` | Norwegian | `.norwegian` |
-| German | `.german` | Polish | `.polish` |
-| Greek | `.greek` | Portuguese | `.portuguese` |
-| Spanish | `.spanish` | Portuguese (Brazil) | `.portugueseBrazil` |
-| Estonian | `.estonian` | Romanian | `.romanian` |
-| Persian | `.persian` | Russian | `.russian` |
+| Chinese | `.chinese` | Montenegrin | `.montenegrin` |
+| Chinese (Simplified) | `.chineseSimplified` | Norwegian | `.norwegian` |
+| Chinese (Traditional) | `.chineseTraditional` | Persian | `.persian` |
+| Croatian | `.croatian` | Polish | `.polish` |
+| Czech | `.czech` | Portuguese | `.portuguese` |
+| Danish | `.danish` | Portuguese (Brazil) | `.portugueseBrazil` |
+| Dutch | `.dutch` | Romanian | `.romanian` |
+| English | `.english` | Russian | `.russian` |
+| Estonian | `.estonian` | Serbian | `.serbian` |
 | Finnish | `.finnish` | Slovak | `.slovak` |
 | French | `.french` | Slovenian | `.slovenian` |
-| Hebrew | `.hebrew` | Serbian | `.serbian` |
-| Hindi | `.hindi` | Swedish | `.swedish` |
-| Croatian | `.croatian` | Thai | `.thai` |
-| Hungarian | `.hungarian` | Turkish | `.turkish` |
-| Armenian | `.armenian` | Ukrainian | `.ukrainian` |
+| Georgian | `.georgian` | Somali | `.somali` |
+| German | `.german` | Spanish | `.spanish` |
+| Greek | `.greek` | Swedish | `.swedish` |
+| Hebrew | `.hebrew` | Thai | `.thai` |
+| Hindi | `.hindi` | Turkish | `.turkish` |
+| Hungarian | `.hungarian` | Ukrainian | `.ukrainian` |
 | Indonesian | `.indonesian` | Uzbek | `.uzbek` |
 | Italian | `.italian` | Vietnamese | `.vietnamese` |
-| Japanese | `.japanese` | Chinese (Simplified) | `.chineseSimplified` |
-| Georgian | `.georgian` | Chinese (Traditional) | `.chineseTraditional` |
+| Japanese | `.japanese` |  |  |
 
 ## Advanced Session Parameters
 
