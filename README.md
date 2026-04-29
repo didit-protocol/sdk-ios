@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.0")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.1")
 ]
 ```
 
@@ -436,6 +436,9 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.3.1
+- Add KYB translations for all 52 supported languages (synced from web locales)
 
 ### 3.3.0
 - Add native KYB flow on iOS, including company search, manual entry, associated parties, document upload, and processing screens
