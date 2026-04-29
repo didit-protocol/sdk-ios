@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.2.13")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.0")
 ]
 ```
 
@@ -436,6 +436,12 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.3.0
+- Add native KYB flow on iOS, including company search, manual entry, associated parties, document upload, and processing screens
+- Update verification UI components and step/progress styling
+- Add Kazakh language support and expand KYB/session translations
+- Add KYB/session models, API fields, and status handling for the new flow
 
 ### 3.2.11
 - Fix PDF file upload in questionnaire on iOS 26 (use modern UTType document picker API with iOS 13 fallback)
