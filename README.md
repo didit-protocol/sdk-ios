@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.1")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.2")
 ]
 ```
 
@@ -436,6 +436,9 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.3.2
+- Fix active liveness WebView language: pass SDK locale in URL path
 
 ### 3.3.1
 - Add KYB translations for all 52 supported languages (synced from web locales)
