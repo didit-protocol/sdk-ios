@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.2")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.3")
 ]
 ```
 
@@ -436,6 +436,12 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.3.3
+- Improve document camera capture quality and upload image readability
+- Fix document scan video segments by finalizing recorder state and exporting playable MP4/H.264 uploads
+- Add iOS SDK version/integration metadata and camera/video error LOG events
+- Improve passive liveness recommendation text color consistency
 
 ### 3.3.2
 - Fix active liveness WebView language: pass SDK locale in URL path
