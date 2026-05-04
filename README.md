@@ -95,7 +95,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.3")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.4")
 ]
 ```
 
@@ -436,6 +436,10 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.3.4
+- Improve step recovery after interrupted or failed backend responses
+- Fix verification flow getting stuck after upload fallback recovery
 
 ### 3.3.3
 - Improve document camera capture quality and upload image readability
