@@ -15,7 +15,7 @@ A lightweight iOS SDK for identity verification. Server-driven, minimal configur
 | iOS 13.0 - 14.x | All features **except** NFC passport reading |
 | iOS 15.0+ | All features including NFC passport reading |
 
-> **Note:** When installing via CocoaPods on apps targeting iOS 13/14, you may see a warning about `NFCPassportReader` requiring iOS 14+. This warning can be safely ignored - the SDK will work correctly, and NFC functionality is automatically disabled on older iOS versions.
+> **Note:** The default installation includes NFC passport reading. If your app does not need NFC dependencies, use the CocoaPods `DiditSDK/Core` subspec.
 
 ## Permissions
 
@@ -28,7 +28,7 @@ The SDK requires the following permissions. Add these to your app's Info.plist:
 | Camera | `NSCameraUsageDescription` | Document scanning and face verification |
 | Microphone | `NSMicrophoneUsageDescription` | Video recording for liveness checks |
 | Photo Library | `NSPhotoLibraryUsageDescription` | Upload documents from device gallery |
-| NFC | `NFCReaderUsageDescription` | Read NFC chips in passports/ID cards |
+| NFC | `NFCReaderUsageDescription` | Read NFC chips in passports/ID cards (only if using NFC) |
 | Location | `NSLocationWhenInUseUsageDescription` | Geolocation for fraud prevention (optional) |
 
 ### Example Info.plist Entries
@@ -72,15 +72,17 @@ To enable NFC reading for passports and ID cards with chips:
    </array>
    ```
 
+Skip this section when installing `DiditSDK/Core`.
+
 ### Important NFC Notes
 
-> **Simulator Limitation:** The iOS SDK requires CoreNFC to run (regardless of whether you use NFC or not). Since Xcode 12, there is a bug where `libnfshared.dylib` is missing from simulators. Refer to [this Stack Overflow thread](https://stackoverflow.com/questions/63915728/xcode12-corenfc-simulator-library-not-loaded) for a solution to this problem.
+> **Simulator Limitation:** The full SDK uses CoreNFC. Since Xcode 12, there is a bug where `libnfshared.dylib` is missing from simulators. Refer to [this Stack Overflow thread](https://stackoverflow.com/questions/63915728/xcode12-corenfc-simulator-library-not-loaded) for a solution to this problem. This does not apply when installing `DiditSDK/Core`.
 
-> **App Store Review:** Even if you disable the NFC feature in your app configuration, Apple may ask you to provide a video demonstrating NFC usage because NFC-related code is part of the SDK binary. You can download a video demonstrating our NFC feature to submit to Apple here: [Download NFC Demo Video](https://business.didit.me/videos/passport-nfc.mp4)
+> **App Store Review:** If you install the full SDK, Apple may ask you to provide a video demonstrating NFC usage because NFC-related code is part of the SDK binary. You can download a video demonstrating our NFC feature to submit to Apple here: [Download NFC Demo Video](https://business.didit.me/videos/passport-nfc.mp4)
 
 ## Installation
 
-### Swift Package Manager (Recommended)
+### Swift Package Manager
 
 Add the package to your project using Xcode:
 
@@ -95,17 +97,43 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.3.4")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.4.0")
 ]
 ```
 
+Use the full SDK when your app supports NFC passport reading:
+
+```swift
+.product(name: "DiditSDK", package: "DiditSDK")
+```
+
+Use the core SDK when your app does not need NFC dependencies:
+
+```swift
+.product(name: "DiditSDKCore", package: "DiditSDK")
+```
+
+The core product removes `OpenSSL.xcframework`, CoreNFC-linked NFC reader code, and NFC runtime requirements.
+
 ### CocoaPods
 
-Add the following to your `Podfile`:
+Use the full SDK when your app supports NFC passport reading:
 
 ```ruby
+platform :ios, '15.0'
+
 pod 'DiditSDK', :podspec => 'https://raw.githubusercontent.com/didit-protocol/sdk-ios/main/DiditSDK.podspec'
 ```
+
+Use the core SDK when your app does not need NFC dependencies:
+
+```ruby
+platform :ios, '13.0'
+
+pod 'DiditSDK/Core', :podspec => 'https://raw.githubusercontent.com/didit-protocol/sdk-ios/main/DiditSDK.podspec'
+```
+
+The core subspec removes `OpenSSL.xcframework`, CoreNFC-linked NFC reader code, and NFC runtime requirements.
 
 Then run:
 
@@ -127,13 +155,16 @@ If you encounter rsync permission errors like `Operation not permitted` when bui
 
 ### Manual (XCFramework)
 
-1. Download both frameworks from the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page:
+For the full NFC-enabled SDK, download these frameworks from the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page:
+
    - `DiditSDK.xcframework.zip`
    - `OpenSSL.xcframework.zip`
-2. Extract both zip files
-3. Drag both `.xcframework` folders into your Xcode project
-4. In your target's **General** tab, ensure both are listed under **Frameworks, Libraries, and Embedded Content**
-5. Set the embed option to **Embed & Sign** for both frameworks
+
+For the core no-NFC SDK, download:
+
+   - `DiditSDK-Core.xcframework.zip`
+
+Extract the zip files, drag the `.xcframework` folders into your Xcode project, and set the embed option to **Embed & Sign**.
 
 ## Quick Start
 
@@ -436,6 +467,12 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.4.0
+- Add optional no-NFC install variants for apps that do not need NFC dependencies: CocoaPods `DiditSDK/Core` and Swift Package Manager `DiditSDKCore`
+- Keep the default `DiditSDK` installation NFC-enabled through `DiditSDK/Full`
+- Fix NFC step routing in mixed CocoaPods integrations by detecting the `NFCPassportReader` module at compile time
+- Document NFC capability, entitlement, and provisioning requirements
 
 ### 3.3.4
 - Improve step recovery after interrupted or failed backend responses
