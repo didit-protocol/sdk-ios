@@ -97,7 +97,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.4.0")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.4.1")
 ]
 ```
 
@@ -467,6 +467,10 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.4.1
+- Fix CocoaPods binary podspec license metadata by inlining the MIT license text
+- Uses the same SDK binaries as 3.4.0
 
 ### 3.4.0
 - Add optional no-NFC install variants for apps that do not need NFC dependencies: CocoaPods `DiditSDK/Core` and Swift Package Manager `DiditSDKCore`
