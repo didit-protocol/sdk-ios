@@ -97,7 +97,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.4.1")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.6.0")
 ]
 ```
 
@@ -307,6 +307,30 @@ DiditSdk.shared.startVerification(token: sessionTokenFromBackend)
 
 > **Note:** The UniLink method (`startVerification(workflowId:)`) only supports `vendorData`. For any other session parameters, use the Backend Session method.
 
+## Dismissing the Verification
+
+The host app can end an active verification programmatically via `DiditSdk.shared.dismiss()`. This is the recommended way to tear down the verification when the host needs to take over the screen — for example, when the app is going to background.
+
+```swift
+DiditSdk.shared.dismiss()
+```
+
+`dismiss()` goes through the SDK's normal completion pipeline: it dismisses the presented UI, resets internal state, and invokes the `onComplete` callback with `.cancelled(session:)` carrying the current `sessionId` if a session was created. It is a no-op when no verification is active.
+
+### Example: dismiss on app backgrounding
+
+```swift
+NotificationCenter.default.addObserver(
+    forName: UIApplication.didEnterBackgroundNotification,
+    object: nil,
+    queue: .main
+) { _ in
+    DiditSdk.shared.dismiss()
+}
+```
+
+> Do not set `DiditSdk.shared.isPresented = false` to dismiss — the flag only triggers presentation on its rising edge and setting it to `false` is a no-op. Likewise, calling `dismiss(animated:)` on the topmost view controller is not supported: it bypasses the SDK's completion pipeline so `onComplete` is never fired.
+
 ## Verification Results
 
 The `VerificationResult` enum provides the outcome of the verification:
@@ -467,6 +491,10 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.6.0
+- Add public `DiditSdk.shared.dismiss()` to programmatically end an active verification from the host app (e.g. on app backgrounding). Funnels through the SDK's completion pipeline and invokes `onComplete` with `.cancelled(session:)`
+- Fix questionnaire whitelabel colors in checkbox, radio, and dropdown to use `panel` / `pillText` tokens (matches web `bc-panel` / `bc-pill-text` instead of `button1` / `primary`)
 
 ### 3.4.1
 - Fix CocoaPods binary podspec license metadata by inlining the MIT license text
