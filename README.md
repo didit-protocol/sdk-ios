@@ -97,7 +97,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.6.1")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.6.2")
 ]
 ```
 
@@ -491,6 +491,10 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.6.2
+- Add Mongolian (`mn`) localization. Available via `SupportedLanguage.mongolian` or device locale `mn-MN`. Coverage is sourced from the web verification frontend; iOS-only strings (NFC reader UI, native upload sheet, exit-confirmation alert) fall back to English and can be hand-translated later.
+- Includes all fixes from 3.6.1 (iOS 13-17 EXC_BAD_ACCESS on Continue, built without the Swift 6.0+ runtime symbol `swift_getExtendedFunctionTypeMetadata`).
 
 ### 3.6.1
 - Fix `EXC_BAD_ACCESS` crash on iPhone X and other devices stuck on iOS 13-17 immediately after tapping "Continue" on the start screen (3.6.0 binary imported `swift_getExtendedFunctionTypeMetadata`, a Swift 6.0+ runtime symbol unavailable before iOS 18)

@@ -21,18 +21,18 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "DiditSDKBinary",
-            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.6.1/DiditSDK.xcframework.zip",
-            checksum: "749f79bc461d92ddeff1db595cf0e1f948fd48d0a7f37086646c3ccbac6c93a9"
+            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.6.2/DiditSDK.xcframework.zip",
+            checksum: "eb1b9797c069ff354b61cdadaeaa11a5a918cf0b0aa8df278fa9d705920da7bf"
         ),
         .binaryTarget(
             name: "OpenSSLBinary",
-            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.6.1/OpenSSL.xcframework.zip",
-            checksum: "a286b87967075177edac53ae564af235e8cd380e33284554ab893d03e74ae33e"
+            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.6.2/OpenSSL.xcframework.zip",
+            checksum: "ae662ce75ab480299ca2581bd6c481b4702e58eb8e06bc3568a7795b43fd3c6f"
         ),
         .binaryTarget(
             name: "DiditSDKCoreBinary",
-            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.6.1/DiditSDK-Core.xcframework.zip",
-            checksum: "5ff51eb1fe3a67f070295902f15ffc4cf19243b37468900931a32290a1df1702"
+            url: "https://github.com/didit-protocol/sdk-ios/releases/download/3.6.2/DiditSDK-Core.xcframework.zip",
+            checksum: "3fddcbc6576e731958076198a6dbd6c4488e58452e8488550978bdbc5f423ba6"
         )
     ]
 )
