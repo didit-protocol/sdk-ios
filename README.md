@@ -97,7 +97,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.6.0")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.6.1")
 ]
 ```
 
@@ -491,6 +491,12 @@ struct CustomView: View {
 ```
 
 ## Changelog
+
+### 3.6.1
+- Fix `EXC_BAD_ACCESS` crash on iPhone X and other devices stuck on iOS 13-17 immediately after tapping "Continue" on the start screen (3.6.0 binary imported `swift_getExtendedFunctionTypeMetadata`, a Swift 6.0+ runtime symbol unavailable before iOS 18)
+- Build with `SWIFT_APPROACHABLE_CONCURRENCY=NO` and explicit `-disable-upcoming-feature` flags so Xcode 26.x toolchains stop emitting Swift 6.x metadata calls; binary is now back-deploy safe to iOS 13
+- Add hard-fail back-deploy verification step (`Step 9`) to `build_xcframework.sh` so a regression cannot be published again
+- No source/API changes, no behavior changes: same release as 3.6.0 with corrected build configuration
 
 ### 3.6.0
 - Add public `DiditSdk.shared.dismiss()` to programmatically end an active verification from the host app (e.g. on app backgrounding). Funnels through the SDK's completion pipeline and invokes `onComplete` with `.cancelled(session:)`
