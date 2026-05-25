@@ -1,10 +1,11 @@
 Pod::Spec.new do |s|
   s.name             = 'DiditSDK'
-  s.version          = '3.6.2'
+  s.version          = '4.0.0'
   s.summary          = 'Didit Identity Verification SDK for iOS'
   s.description      = <<-DESC
-    The Didit SDK provides a complete identity verification solution including
-    document scanning, NFC passport reading, face verification, and more.
+    Modular identity verification SDK. Install Core for the bare minimum,
+    add AutoDetection for MediaPipe-based auto capture, add NFC for passport
+    chip reading, or install All for the complete feature set.
   DESC
 
   s.homepage         = 'https://github.com/didit-protocol/sdk-ios'
@@ -13,7 +14,7 @@ Pod::Spec.new do |s|
     :text => <<-LICENSE
 MIT License
 
-Copyright (c) 2025 Didit
+Copyright (c) 2026 Didit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,20 +37,34 @@ SOFTWARE.
   }
   s.author           = { 'Didit' => 'support@didit.me' }
   s.ios.deployment_target = '13.0'
-  s.swift_version = '5.0'
-  s.default_subspec = 'Full'
+  s.swift_version    = '5.0'
+  s.default_subspec  = 'All'
   s.source = {
-    :http => 'https://github.com/didit-protocol/sdk-ios/releases/download/3.6.2/DiditSDK-CocoaPods.zip'
+    :http => "https://github.com/didit-protocol/sdk-ios/releases/download/#{s.version}/DiditSDK-CocoaPods.zip"
   }
+
+  shared_frameworks      = ['UIKit', 'SwiftUI', 'AVFoundation', 'CoreLocation']
+  passport_frameworks    = ['CoreNFC']
 
   s.subspec 'Core' do |core|
     core.vendored_frameworks = 'Core/DiditSDK.xcframework'
-    core.frameworks = 'UIKit', 'SwiftUI', 'AVFoundation', 'CoreLocation'
+    core.frameworks          = shared_frameworks
   end
 
-  s.subspec 'Full' do |full|
-    full.ios.deployment_target = '15.0'
-    full.vendored_frameworks = 'Full/DiditSDK.xcframework', 'Full/OpenSSL.xcframework'
-    full.frameworks = 'UIKit', 'SwiftUI', 'AVFoundation', 'CoreNFC', 'CoreLocation'
+  s.subspec 'AutoDetection' do |auto|
+    auto.vendored_frameworks = 'AutoDetection/DiditSDK.xcframework'
+    auto.frameworks          = shared_frameworks
+  end
+
+  s.subspec 'NFC' do |nfc|
+    nfc.ios.deployment_target = '15.0'
+    nfc.vendored_frameworks   = 'NFC/DiditSDK.xcframework', 'NFC/OpenSSL.xcframework'
+    nfc.frameworks            = shared_frameworks + passport_frameworks
+  end
+
+  s.subspec 'All' do |all|
+    all.ios.deployment_target = '15.0'
+    all.vendored_frameworks   = 'All/DiditSDK.xcframework', 'All/OpenSSL.xcframework'
+    all.frameworks            = shared_frameworks + passport_frameworks
   end
 end

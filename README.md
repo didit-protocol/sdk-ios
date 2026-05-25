@@ -15,7 +15,20 @@ A lightweight iOS SDK for identity verification. Server-driven, minimal configur
 | iOS 13.0 - 14.x | All features **except** NFC passport reading |
 | iOS 15.0+ | All features including NFC passport reading |
 
-> **Note:** The default installation includes NFC passport reading. If your app does not need NFC dependencies, use the CocoaPods `DiditSDK/Core` subspec.
+## SDK Variants
+
+Starting with `4.0.0` the SDK is split into four installable variants so apps only pay the binary cost of features they actually use.
+
+| Variant | NFC passport reading | MediaPipe auto-detection | Device-slice Mach-O | Use when |
+|---------|----------------------|--------------------------|--------------------:|----------|
+| `Core` | – | – | **~6 MB** | smallest footprint, manual capture only |
+| `NFC` | ✓ | – | ~7 MB *(plus OpenSSL)* | passport chip reading without auto capture |
+| `AutoDetection` | – | ✓ | ~37 MB | auto capture without passport chip reading |
+| `All` | ✓ | ✓ | ~38 MB *(plus OpenSSL)* | every feature (default subspec) |
+
+Numbers above are the `ios-arm64` slice Mach-O — the binary that actually ships in the IPA. MediaPipe (the auto-detection ML runtime) accounts for ~32 MB of that; picking `Core` or `NFC` removes it entirely and brings the SDK's IPA contribution to single-digit MB. NFC adds `NFCPassportReader` + `OpenSSL.xcframework`, both lightweight compared to MediaPipe. Sizes are measured against the 4.0.0 release and may shift by a few percent per release; the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page records the authoritative numbers.
+
+The `AutoDetection` and `NFC` subspecs depend on `Core`; `All` depends on both. Pick exactly one subspec in your `Podfile` and exactly one library product in your `Package.swift`.
 
 ## Permissions
 
@@ -72,13 +85,13 @@ To enable NFC reading for passports and ID cards with chips:
    </array>
    ```
 
-Skip this section when installing `DiditSDK/Core`.
+Skip this section unless you install the `NFC` or `All` variant.
 
 ### Important NFC Notes
 
-> **Simulator Limitation:** The full SDK uses CoreNFC. Since Xcode 12, there is a bug where `libnfshared.dylib` is missing from simulators. Refer to [this Stack Overflow thread](https://stackoverflow.com/questions/63915728/xcode12-corenfc-simulator-library-not-loaded) for a solution to this problem. This does not apply when installing `DiditSDK/Core`.
+> **Simulator Limitation:** The `NFC` and `All` variants link CoreNFC. Since Xcode 12, there is a bug where `libnfshared.dylib` is missing from simulators. Refer to [this Stack Overflow thread](https://stackoverflow.com/questions/63915728/xcode12-corenfc-simulator-library-not-loaded) for a solution to this problem. This does not apply to the `Core` or `AutoDetection` variants.
 
-> **App Store Review:** If you install the full SDK, Apple may ask you to provide a video demonstrating NFC usage because NFC-related code is part of the SDK binary. You can download a video demonstrating our NFC feature to submit to Apple here: [Download NFC Demo Video](https://business.didit.me/videos/passport-nfc.mp4)
+> **App Store Review:** If you install the `NFC` or `All` variant, Apple may ask you to provide a video demonstrating NFC usage because NFC-related code is part of the SDK binary. You can download a video demonstrating our NFC feature to submit to Apple here: [Download NFC Demo Video](https://business.didit.me/videos/passport-nfc.mp4)
 
 ## Installation
 
@@ -97,43 +110,42 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "3.6.2")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.0")
+],
+targets: [
+    .target(
+        name: "YourApp",
+        dependencies: [
+            .product(name: "DiditSDK", package: "sdk-ios")
+        ]
+    )
 ]
 ```
 
-Use the full SDK when your app supports NFC passport reading:
+Pick exactly one library product to match your chosen variant:
 
-```swift
-.product(name: "DiditSDK", package: "DiditSDK")
-```
+| Variant | SPM library product |
+|---------|---------------------|
+| `Core` | `DiditSDKCore` |
+| `AutoDetection` | `DiditSDKAutoDetection` |
+| `NFC` | `DiditSDKNFC` |
+| `All` (default) | `DiditSDK` |
 
-Use the core SDK when your app does not need NFC dependencies:
-
-```swift
-.product(name: "DiditSDKCore", package: "DiditSDK")
-```
-
-The core product removes `OpenSSL.xcframework`, CoreNFC-linked NFC reader code, and NFC runtime requirements.
+In all cases your app code imports the same module: `import DiditSDK`.
 
 ### CocoaPods
 
-Use the full SDK when your app supports NFC passport reading:
-
 ```ruby
+podspec_url = 'https://raw.githubusercontent.com/didit-protocol/sdk-ios/main/DiditSDK.podspec'
+
 platform :ios, '15.0'
-
-pod 'DiditSDK', :podspec => 'https://raw.githubusercontent.com/didit-protocol/sdk-ios/main/DiditSDK.podspec'
+pod 'DiditSDK/All',           :podspec => podspec_url
+# pod 'DiditSDK/Core',          :podspec => podspec_url   # platform :ios, '13.0'
+# pod 'DiditSDK/AutoDetection', :podspec => podspec_url   # platform :ios, '13.0'
+# pod 'DiditSDK/NFC',           :podspec => podspec_url   # platform :ios, '15.0'
 ```
 
-Use the core SDK when your app does not need NFC dependencies:
-
-```ruby
-platform :ios, '13.0'
-
-pod 'DiditSDK/Core', :podspec => 'https://raw.githubusercontent.com/didit-protocol/sdk-ios/main/DiditSDK.podspec'
-```
-
-The core subspec removes `OpenSSL.xcframework`, CoreNFC-linked NFC reader code, and NFC runtime requirements.
+Pick exactly one subspec. `Core` and `AutoDetection` deploy down to iOS 13; `NFC` and `All` require iOS 15 because of `NFCPassportReader`.
 
 Then run:
 
@@ -155,16 +167,16 @@ If you encounter rsync permission errors like `Operation not permitted` when bui
 
 ### Manual (XCFramework)
 
-For the full NFC-enabled SDK, download these frameworks from the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page:
+Each release publishes one XCFramework per variant. Pick the variant you want, download the zips from the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page, and drag them into your Xcode project:
 
-   - `DiditSDK.xcframework.zip`
-   - `OpenSSL.xcframework.zip`
+| Variant | Download |
+|---------|----------|
+| `Core` | `DiditSDK-Core.xcframework.zip` |
+| `AutoDetection` | `DiditSDK-AutoDetection.xcframework.zip` |
+| `NFC` | `DiditSDK-NFC.xcframework.zip` + `OpenSSL.xcframework.zip` |
+| `All` | `DiditSDK.xcframework.zip` + `OpenSSL.xcframework.zip` |
 
-For the core no-NFC SDK, download:
-
-   - `DiditSDK-Core.xcframework.zip`
-
-Extract the zip files, drag the `.xcframework` folders into your Xcode project, and set the embed option to **Embed & Sign**.
+Extract each zip and set the embed option to **Embed & Sign** under **Frameworks, Libraries, and Embedded Content**.
 
 ## Quick Start
 
@@ -249,7 +261,7 @@ DiditSdk.shared.startVerification(
 
 ### Language Settings
 
-The SDK supports 53 languages. If no language is specified, the SDK uses the device locale with English fallback.
+The SDK supports 54 languages. If no language is specified, the SDK uses the device locale with English fallback.
 
 ```swift
 // Use device locale (default)
@@ -292,7 +304,7 @@ let deviceLanguage = SupportedLanguage.fromDeviceLocale()
 | Hungarian | `.hungarian` | Ukrainian | `.ukrainian` |
 | Indonesian | `.indonesian` | Uzbek | `.uzbek` |
 | Italian | `.italian` | Vietnamese | `.vietnamese` |
-| Japanese | `.japanese` |  |  |
+| Japanese | `.japanese` | Mongolian | `.mongolian` |
 
 ## Advanced Session Parameters
 
@@ -490,7 +502,32 @@ struct CustomView: View {
 }
 ```
 
+## Migrating from 3.x to 4.x
+
+The install surface is split into four variants. Most integrations keep working without code changes; one path has a meaningful behavior change.
+
+| Old (3.x) | New (4.x) | Action required |
+|-----------|-----------|-----------------|
+| `pod 'DiditSDK'` | `pod 'DiditSDK'` (resolves to `DiditSDK/All`) | none — same feature set as 3.x `DiditSDK/Full` |
+| `pod 'DiditSDK/Full'` | `pod 'DiditSDK/All'` | rename the subspec |
+| `pod 'DiditSDK/Core'` *(relying on auto capture)* | `pod 'DiditSDK/AutoDetection'` | rename the subspec — the 4.x `Core` variant drops MediaPipe and silently falls back to manual capture |
+| `pod 'DiditSDK/Core'` *(manual capture only)* | `pod 'DiditSDK/Core'` | none — smaller binary, same behavior you had |
+| SPM `.product(name: "DiditSDK", …)` | SPM `.product(name: "DiditSDK", …)` | none — still resolves to the `All` variant |
+| SPM `.product(name: "DiditSDKCore", …)` *(relying on auto capture)* | SPM `.product(name: "DiditSDKAutoDetection", …)` | rename the product for the same reason as CocoaPods |
+| SPM `.product(name: "DiditSDKCore", …)` *(manual capture only)* | SPM `.product(name: "DiditSDKCore", …)` | none |
+
+`import DiditSDK` is unchanged in every case. Capture views still expose the same public API; the only observable difference in `Core` is that document/face screens skip the auto-capture countdown and require the shutter button.
+
 ## Changelog
+
+### 4.0.0
+
+**Breaking change** — the install surface is now split into four variants. Existing CocoaPods integrations of `pod 'DiditSDK'` keep working (default subspec is `All`, which is identical in features to 3.x `DiditSDK/Full`); SPM consumers of `DiditSDK` also keep working (library product `DiditSDK` is the `All` variant). Existing integrations of `pod 'DiditSDK/Core'` or `.product(name: "DiditSDKCore", …)` keep working — but note that the 4.0 `Core` variant no longer ships MediaPipe, so apps that rely on auto capture must switch to `AutoDetection` (no NFC) or stay on the default `All`. See the [Migrating from 3.x to 4.x](#migrating-from-3x-to-4x) section above.
+
+- Split the SDK into four installable variants: `Core` (no MediaPipe, no NFC, ~6 MB device-slice Mach-O), `AutoDetection` (MediaPipe only, ~37 MB), `NFC` (NFC reader only, ~7 MB + OpenSSL), `All` (everything, default, ~38 MB + OpenSSL). This responds to client feedback that the 3.x ~38 MB binary triggered Apple's WiFi-only download warning on cellular; consumers that do not need auto capture can drop ~84% of the SDK's binary footprint by switching to `Core`.
+- Auto-detection sources (`DocumentDetector`, `FaceDetector`, `ModelDownloader`, and the manager classes) now self-gate with `#if canImport(MediaPipeTasksVision)`. Variants without MediaPipe still compile and fall back to manual shutter capture without functional regression beyond losing the auto-capture timer overlay.
+- Add Mongolian (`mn`) localization in `SupportedLanguage.mongolian` with full coverage of every SDK string.
+- Includes all fixes from 3.6.1/3.6.2 (iPhone X EXC_BAD_ACCESS on Continue, Mongolian localization).
 
 ### 3.6.2
 - Add Mongolian (`mn`) localization. Available via `SupportedLanguage.mongolian` or device locale `mn-MN`. Coverage is sourced from the web verification frontend; iOS-only strings (NFC reader UI, native upload sheet, exit-confirmation alert) fall back to English and can be hand-translated later.
