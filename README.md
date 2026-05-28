@@ -110,7 +110,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.0")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.2")
 ],
 targets: [
     .target(
@@ -519,6 +519,15 @@ The install surface is split into four variants. Most integrations keep working 
 `import DiditSDK` is unchanged in every case. Capture views still expose the same public API; the only observable difference in `Core` is that document/face screens skip the auto-capture countdown and require the shutter button.
 
 ## Changelog
+
+### 4.0.2
+
+- Add `Configuration.defaultDocumentCamera` and `Configuration.defaultLivenessCamera` (new public `CameraLens` enum: `.front` / `.back`) so apps can choose which physical lens opens first on each capture screen. Defaults: document `.back`, liveness `.front`. Falls back to the first available camera when the requested lens isn't present on the device.
+- Add `Configuration.showDocumentCameraSwitchButton` and `Configuration.showLivenessCameraSwitchButton` (default `true`) to hide the in-capture camera switcher and lock the user to the chosen lens. The switcher is also automatically hidden on devices with only one camera, regardless of this flag.
+- Add support for the `Tax Card` (`TC`) OCR document type so iOS now displays the same set of document cards as the web frontend. Includes the India `IND.taxCard` country override ("PAN Card (Permanent Account Number)") translated across all 54 supported locales, and a new `document-tax-card` vector asset.
+- Honor the session-level `expected_document_types` whitelist (`P / ID / DL / RP / HIC / TC`) so a session that constrains the allowed document types now applies the same filter on iOS that the web frontend applies.
+- Fix the selected-country / selected-document badges on the upload screen to use the white-label `bc-pill-text` token for the title text (was incorrectly using `bc-primary`). Brings the badge title in line with both the icon next to it and the document-selection card on the previous screen.
+- Fix the manual capture button disappearing after the user switches the camera mid-session on the liveness (passive face) and document capture screens. The same delayed re-show timer used on first appear now also fires after each lens swap, matching the Android `LaunchedEffect(cameraManager)` behavior.
 
 ### 4.0.0
 
