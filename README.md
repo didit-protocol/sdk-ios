@@ -42,7 +42,6 @@ The SDK requires the following permissions. Add these to your app's Info.plist:
 | Microphone | `NSMicrophoneUsageDescription` | Video recording for liveness checks |
 | Photo Library | `NSPhotoLibraryUsageDescription` | Upload documents from device gallery |
 | NFC | `NFCReaderUsageDescription` | Read NFC chips in passports/ID cards (only if using NFC) |
-| Location | `NSLocationWhenInUseUsageDescription` | Geolocation for fraud prevention (optional) |
 
 ### Example Info.plist Entries
 
@@ -55,8 +54,6 @@ The SDK requires the following permissions. Add these to your app's Info.plist:
 <string>Photo library access is required to upload document images.</string>
 <key>NFCReaderUsageDescription</key>
 <string>NFC access is required to read the chip in your identity document.</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Location access helps verify your identity and prevent fraud.</string>
 ```
 
 ### NFC Configuration (for passport/ID chip reading)
@@ -110,7 +107,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.2")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.3")
 ],
 targets: [
     .target(
@@ -519,6 +516,16 @@ The install surface is split into four variants. Most integrations keep working 
 `import DiditSDK` is unchanged in every case. Capture views still expose the same public API; the only observable difference in `Core` is that document/face screens skip the auto-capture countdown and require the shutter button.
 
 ## Changelog
+
+### 4.0.3
+- Add an active-liveness backend-processing loader: after the liveness step, whenever the session is still processing on the backend (`current_step_v2` != `current_step`), the SDK shows a full-screen "Verifying your details" overlay with rotating status messages, the feature step bar, and the "Secured by" footer, then transitions smoothly into the next step. Removes the brief black screen that could appear between active liveness and the next step. Messages are translated across all supported locales.
+- Add support for the `Social Security Card` (`SSC`) OCR document type, so iOS shows the same document set as the web frontend (uses the ID-card capture aspect ratio), translated across all supported locales.
+- Fix front-camera document capture being horizontally mirrored: the captured/uploaded document image is now un-mirrored on the front lens, while the live preview and selfie/liveness capture stay mirrored as before.
+- Add proper retry error messaging for liveness and face-match failures, translated across all supported locales.
+- Fix an active-liveness failure that could occur when the network (Wi-Fi) dropped during the liveness WebView flow.
+- Remove the unused Location permission: the SDK no longer links `CoreLocation` or requests location, so integrators can drop `NSLocationWhenInUseUsageDescription` from their Info.plist.
+- Emit a Tier-B device-class `composite_hash` fingerprint (`X-Didit-FP-Hash` header) for parity with the web SDK and backend device-identification contract.
+- Build: strengthen third-party symbol hiding in `build_xcframework.sh` to keep App Store submissions clear of ITMS-90338.
 
 ### 4.0.2
 

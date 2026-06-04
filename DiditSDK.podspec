@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DiditSDK'
-  s.version          = '4.0.2'
+  s.version          = '4.0.3'
   s.summary          = 'Didit Identity Verification SDK for iOS'
   s.description      = <<-DESC
     Modular identity verification SDK. Install Core for the bare minimum,
@@ -43,7 +43,7 @@ SOFTWARE.
     :http => "https://github.com/didit-protocol/sdk-ios/releases/download/#{s.version}/DiditSDK-CocoaPods.zip"
   }
 
-  shared_frameworks      = ['UIKit', 'SwiftUI', 'AVFoundation', 'CoreLocation']
+  shared_frameworks      = ['UIKit', 'SwiftUI', 'AVFoundation']
   passport_frameworks    = ['CoreNFC']
 
   s.subspec 'Core' do |core|
