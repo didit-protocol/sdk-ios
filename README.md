@@ -107,7 +107,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.3")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.4")
 ],
 targets: [
     .target(
@@ -516,6 +516,9 @@ The install surface is split into four variants. Most integrations keep working 
 `import DiditSDK` is unchanged in every case. Capture views still expose the same public API; the only observable difference in `Core` is that document/face screens skip the auto-capture countdown and require the shutter button.
 
 ## Changelog
+
+### 4.0.4
+- Improve the post-active-liveness loader: on success the SDK now dismisses the liveness WebView immediately and shows the native processing/success sheet over an opaque background, then cross-fades into the next step — removing the residual blank/flash that could appear between active liveness and the next step.
 
 ### 4.0.3
 - Add an active-liveness backend-processing loader: after the liveness step, whenever the session is still processing on the backend (`current_step_v2` != `current_step`), the SDK shows a full-screen "Verifying your details" overlay with rotating status messages, the feature step bar, and the "Secured by" footer, then transitions smoothly into the next step. Removes the brief black screen that could appear between active liveness and the next step. Messages are translated across all supported locales.
