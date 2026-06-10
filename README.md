@@ -107,7 +107,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.4")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.5")
 ],
 targets: [
     .target(
@@ -516,6 +516,17 @@ The install surface is split into four variants. Most integrations keep working 
 `import DiditSDK` is unchanged in every case. Capture views still expose the same public API; the only observable difference in `Core` is that document/face screens skip the auto-capture countdown and require the shutter button.
 
 ## Changelog
+
+### 4.0.5
+- Fix App Store rejection **ITMS-90338**: the `All` and `AutoDetection` xcframeworks no longer export MediaPipe's bundled native symbols (RE2, ICU, TensorFlow Lite, …) in their dyld export trie. The build now restricts exports to DiditSDK's own Swift/Objective-C API at link time (`-exported_symbols_list`) and verifies the export trie itself, so uploads are clear of the private-symbol collision (e.g. `re2::*`) that flagged 4.0.4. No source or API changes — same features and runtime behavior.
+- Align every input and selector to the white-label tokens (background, text, placeholder, border-radius) so they match the document selector: text fields, OTP entry, dropdowns, country/phone pickers, and all questionnaire fields. Unselected radio buttons now use the selected color at reduced opacity instead of a hardcoded gray, so they stay visible on every theme.
+- Align the KYB screens to the white-label tokens: the documents upload view, the key-people cards and editor, the awaiting-users view, and company search/results — fixing low-contrast text/icons, the status badges, and the "enter company data manually" link color.
+- Fix passive-liveness uploads that could exceed the backend size limit: resized images are now rendered at scale 1 (they were silently inflated to the device's screen scale), and face-image compression now matches the web frontend (resize to a max dimension + binary-search JPEG to the target size).
+- Add Algeria-specific NFC intro videos: when the document country is Algeria (`DZA`), the NFC chip-reading screen now plays the Algeria-specific instructional clip (`nfc-id-algeria` for ID-type documents, `nfc-passport-algeria` for passports). All other countries keep the standard `nfc-id` / `nfc-passport` videos.
+- Resolve the NFC instructional video from the document's actual country: the SDK now reads the backend-detected `country` from the OCR response (falling back to the user-selected country, then the expected country), so the correct country video shows even when the country picked in the selector differs from the scanned document.
+- Suppress the camera shutter sound on still capture (document capture, the anti-spoofing front-camera selfie, and passive liveness) on iOS 18+ where the device and local regulations allow it, via Apple's official `AVCapturePhotoSettings.isShutterSoundSuppressionEnabled`. Capture resolution and quality are unchanged; iOS 17 and earlier, and regions such as Japan/Korea, keep the system shutter (Apple provides no suppression there).
+- Fix a stretched / incorrectly rotated front-camera preview and capture on newer devices (e.g. iPhone 17 Pro) by applying iOS 17's `RotationCoordinator` horizon-level rotation angle; scoped to the front camera so the rear document camera is unaffected.
+- Fix the document capture screen tearing down a camera owned by a newer screen instance when the view is recreated, by tracking the active camera owner.
 
 ### 4.0.4
 - Improve the post-active-liveness loader: on success the SDK now dismisses the liveness WebView immediately and shows the native processing/success sheet over an opaque background, then cross-fades into the next step — removing the residual blank/flash that could appear between active liveness and the next step.
