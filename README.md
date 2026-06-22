@@ -107,7 +107,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.5")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.6")
 ],
 targets: [
     .target(
@@ -516,6 +516,17 @@ The install surface is split into four variants. Most integrations keep working 
 `import DiditSDK` is unchanged in every case. Capture views still expose the same public API; the only observable difference in `Core` is that document/face screens skip the auto-capture countdown and require the shutter button.
 
 ## Changelog
+
+### 4.0.6
+- Fix App Store rejection **ITMS-91061** (missing privacy manifest) and the sibling **ITMS-91065** (missing signature) for `Frameworks/OpenSSL.framework/OpenSSL`: `NFCPassportReader` is bumped `2.1.2 → 2.3.0`, which pulls `OpenSSL-Universal 3.3.3001` shipping its own `PrivacyInfo.xcprivacy` and code signature. The `OpenSSL.xcframework` source path in `build_xcframework.sh` was corrected for the OpenSSL 3.x pod layout. NFC chip reading was verified end-to-end on device. No public API change.
+- KYB: company card, key people and associated parties, with key-people reuse across steps.
+- KYB: US state selector in company search and confirmation.
+- KYB: editable company country in the confirmation view; prefill key people when the preceding step is backend-only; email no longer required for key people when KYC isn't required for them.
+- Fix KYB company select failing to advance on partial registry data.
+- Fix the backend-processing loader getting stuck on the AML screening step.
+- Fix the country flag not updating when changing the selected country, document preview rotation on the back-side scan, and the country/state picker search-icon visibility.
+- Fix some countries showing the alpha-3 code instead of the country name; align start-screen feature icons with Android and web; UI polish in KYB views (button spacing/separator, phone country picker).
+- Russian ID & passport document-override translations, plus a general translations refresh.
 
 ### 4.0.5
 - Fix App Store rejection **ITMS-90338**: the `All` and `AutoDetection` xcframeworks no longer export MediaPipe's bundled native symbols (RE2, ICU, TensorFlow Lite, …) in their dyld export trie. The build now restricts exports to DiditSDK's own Swift/Objective-C API at link time (`-exported_symbols_list`) and verifies the export trie itself, so uploads are clear of the private-symbol collision (e.g. `re2::*`) that flagged 4.0.4. No source or API changes — same features and runtime behavior.
