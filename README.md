@@ -517,6 +517,24 @@ The install surface is split into four variants. Most integrations keep working 
 
 ## Changelog
 
+### 4.0.9
+- Questionnaire: fields are now validated against their expected format before the step can be submitted, with a localized inline error message.
+- Questionnaire: improved the inline validation error UI/UX for text, number, and text-area fields.
+- Added internal front-camera orientation diagnostics (`LOG` telemetry) to investigate the iPhone 17 / Center Stage preview and recorded-video rotation. No public API or user-facing behavior change.
+
+### 4.0.8
+- KYB key people: the ownership percentage is now optional unless the session marks it required.
+- Fix passive-liveness video recorded in landscape on iPhone 17 / 17 Pro / 17 Pro Max — the recording connection is now pinned to portrait (no-op on earlier devices).
+- Fix the success/failure status texts shown after a face (liveness) upload.
+- Fix the active-liveness face intro screen briefly appearing behind the processing/result overlay when the liveness WebView finishes.
+- Document capture: detection corner guides are no longer drawn when auto-detection is unavailable (the Core/NFC variants, or when the detector fails to load).
+
+### 4.0.7
+- Add the Document AI verification step: prompts the user to upload the requested document(s) for AI-based data extraction, localized across all supported languages.
+- KYB document upload now lists the fields the uploaded document must clearly show.
+- Fix the KYB key-people close (X) button not opening the exit-confirmation modal.
+- Align the SDK build to `NFCPassportReader 2.3.0` / `OpenSSL-Universal 3.3.3001`.
+
 ### 4.0.6
 - Fix App Store rejection **ITMS-91061** (missing privacy manifest) and the sibling **ITMS-91065** (missing signature) for `Frameworks/OpenSSL.framework/OpenSSL`: `NFCPassportReader` is bumped `2.1.2 → 2.3.0`, which pulls `OpenSSL-Universal 3.3.3001` shipping its own `PrivacyInfo.xcprivacy` and code signature. The `OpenSSL.xcframework` source path in `build_xcframework.sh` was corrected for the OpenSSL 3.x pod layout. NFC chip reading was verified end-to-end on device. No public API change.
 - KYB: company card, key people and associated parties, with key-people reuse across steps.

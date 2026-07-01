@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DiditSDK'
-  s.version          = '4.0.8'
+  s.version          = '4.0.9'
   s.summary          = 'Didit Identity Verification SDK for iOS'
   s.description      = <<-DESC
     Modular identity verification SDK. Install Core for the bare minimum,
