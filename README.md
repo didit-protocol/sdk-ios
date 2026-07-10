@@ -517,6 +517,21 @@ The install surface is split into four variants. Most integrations keep working 
 
 ## Changelog
 
+### 4.1.0
+- Native wallet-ownership verification flow (method picker, message signing, screenshot upload, self-declaration, satoshi/micro-deposit test, completion/expired) styled like the verification process, launched natively for the `wallet_ownership` action via the public `DiditSdk.presentWalletOwnership(widgetToken:)`.
+- WalletConnect message signing behind an optional `DiditSDK/WalletConnect` subspec (reown-swift / ReownAppKit, iOS 15+): EVM `personal_sign` and Solana `solana_signMessage`, enabled with `DiditSdk.enableWalletConnect(projectId:appGroupIdentifier:)`. The core SDK stays iOS 13 and ships a no-op signer by default, so apps that don't need signing are unaffected.
+- Transaction submission: native `submitTransaction` / `getTransaction`. A `wallet_ownership` required-action auto-launches the native flow; a `verification_session` action is returned on `result.actionRequired` (type, url, sessionId, sessionToken, status) for your existing `startVerification` / `.diditVerification` integration. Concurrent submissions are de-duplicated so a second call can't clobber an in-flight verification.
+- New document quality-check screen validates the captured document (framing/crop) before it is uploaded.
+- Full-color Didit logo on the verification welcome and wallet-ownership entry screens (the muted mark stays in the "Secured by" footer), and white-label logos now support SVG sources.
+- Requests now send an `X-Didit-Device-Model` header (device model identifier) used for backend IP-analysis / device fingerprinting.
+- Passive-liveness video is now recorded correctly on iPhone 17 / 17 Pro. These devices ship a portrait-mounted Center Stage front sensor that `AVCaptureMovieFileOutput` records in the wrong orientation; on iPhone 17-class hardware (`iPhone17,x` and newer) the SDK now records from the capture sample buffers with a matching sample-buffer preview, so the preview and the uploaded video are upright and correctly proportioned. Every earlier iPhone keeps the original recording path unchanged.
+- Session-driven audio recording: document and passive-liveness capture now record audio only when the current session step requires it (a new per-step flag), and the microphone permission is requested on demand — steps that don't need audio never prompt.
+- KYB company search now uses two separate fields, company name and registration number, instead of one unified query. Either field alone can search, both are sent for a combined lookup, and both are prefilled from the session's expected details; results, the US-state selector, and manual entry were updated to match.
+- Backend-processing loader is fully synchronized with the verification WebView and stays on screen during the WebSocket → polling fallback, removing the flicker/desync between the web and native processing UIs.
+- Document front-camera flow hardened: the anti-spoofing selfie is captured before the document camera starts (fixing a single-capture-session race that could silently skip the front-camera upload), a stalled capture can no longer hang the flow (resume-once timeout + guaranteed camera release), and repeated empty video segments fall back to a photo-only upload instead of looping the capture screen.
+- KYB `kyb_key_people_ownership_required` is now honored on iOS, consent/start-screen legal links are tappable, and translations were refreshed.
+- Fixes: passive liveness no longer gets stuck on the loading spinner after tapping "Continue"; front-camera document images are no longer mirrored on upload (with an instant un-mirrored confirmation frame and a capability-gated torch); the backend loader no longer flickers on passive-liveness success; the quality-check upload no longer drops recorded video segments; and the WalletConnect modal no longer crashes on device.
+
 ### 4.0.9
 - Questionnaire: fields are now validated against their expected format before the step can be submitted, with a localized inline error message.
 - Questionnaire: improved the inline validation error UI/UX for text, number, and text-area fields.
