@@ -107,7 +107,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.0.6")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.5.3")
 ],
 targets: [
     .target(
@@ -129,6 +129,14 @@ Pick exactly one library product to match your chosen variant:
 | `All` (default) | `DiditSDK` |
 
 In all cases your app code imports the same module: `import DiditSDK`.
+
+> **Swift Package Manager does not enforce the iOS 15 floor for you.** `Package.swift` declares
+> `platforms: [.iOS(.v13)]` for the whole package — SwiftPM has no per-product platform
+> declaration — and the shipped binaries are built with `minos 13.0`. So Xcode will let you add
+> `DiditSDK` or `DiditSDKNFC` to an iOS 13 or 14 target with no manifest error and no link error,
+> even though chip reading needs **iOS 15+** (`NFCPassportReader`). **Set your own target's
+> deployment target to 15.0 when using the `All` or `NFC` product.** CocoaPods enforces this for
+> you through the subspec's `deployment_target`; SPM cannot.
 
 ### CocoaPods
 
@@ -548,10 +556,22 @@ The install surface is split into four variants. Most integrations keep working 
 - Add the Document AI verification step: prompts the user to upload the requested document(s) for AI-based data extraction, localized across all supported languages.
 - KYB document upload now lists the fields the uploaded document must clearly show.
 - Fix the KYB key-people close (X) button not opening the exit-confirmation modal.
-- Align the SDK build to `NFCPassportReader 2.3.0` / `OpenSSL-Universal 3.3.3001`.
+- **This is the first release that actually ships OpenSSL 3.x.** The build is aligned to
+  `NFCPassportReader 2.3.0` / `OpenSSL-Universal 3.3.3001` (upstream `OpenSSL 3.3.3`, 11 Feb 2025),
+  and the shipped `OpenSSL.framework` carries its own `PrivacyInfo.xcprivacy` and code signature.
+  This is what closes App Store rejections **ITMS-91061** (missing privacy manifest) and
+  **ITMS-91065** (missing signature) for `Frameworks/OpenSSL.framework/OpenSSL`. NFC chip reading
+  was verified end-to-end on device. No public API change.
+  **If you are pinned below `4.0.7`, you are still on OpenSSL 1.1.1s — upgrade to 4.0.7 or later.**
 
 ### 4.0.6
-- Fix App Store rejection **ITMS-91061** (missing privacy manifest) and the sibling **ITMS-91065** (missing signature) for `Frameworks/OpenSSL.framework/OpenSSL`: `NFCPassportReader` is bumped `2.1.2 → 2.3.0`, which pulls `OpenSSL-Universal 3.3.3001` shipping its own `PrivacyInfo.xcprivacy` and code signature. The `OpenSSL.xcframework` source path in `build_xcframework.sh` was corrected for the OpenSSL 3.x pod layout. NFC chip reading was verified end-to-end on device. No public API change.
+> **Correction (2026-08-04).** This entry previously claimed that 4.0.6 bumped
+> `NFCPassportReader` `2.1.2 → 2.3.0`, shipped `OpenSSL-Universal 3.3.3001`, and fixed App Store
+> rejections **ITMS-91061** / **ITMS-91065**. **It did not.** The `OpenSSL.xcframework.zip`
+> published for 4.0.6 still contains **OpenSSL 1.1.1s** (`CFBundleShortVersionString` `1.1.1900`)
+> with **no** `PrivacyInfo.xcprivacy` — matching 4.0.5, not 4.0.7. OpenSSL 3.x and the privacy
+> manifest first appear in the **4.0.7** release asset. Check any release yourself with:
+> `unzip -p OpenSSL.xcframework.zip 'OpenSSL.xcframework/ios-arm64/OpenSSL.framework/Info.plist' | plutil -p -`
 - KYB: company card, key people and associated parties, with key-people reuse across steps.
 - KYB: US state selector in company search and confirmation.
 - KYB: editable company country in the confirmation view; prefill key people when the preceding step is backend-only; email no longer required for key people when KYC isn't required for them.
