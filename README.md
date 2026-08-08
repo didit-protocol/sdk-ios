@@ -507,6 +507,45 @@ struct CustomView: View {
 }
 ```
 
+## Debug Symbols (dSYMs)
+
+The shipped `DiditSDK.framework` binary is stripped, so crash reports inside the SDK arrive as raw addresses unless you supply its debug symbols.
+Every release publishes a `dSYM.zip` asset next to the XCFramework for exactly this purpose.
+
+Download the one matching the variant you install, from the same [release](https://github.com/didit-protocol/sdk-ios/releases) as your pinned version:
+
+| Variant | SPM product | dSYM asset |
+|---------|-------------|------------|
+| `All` | `DiditSDK` | `DiditSDK.dSYM.zip` |
+| `Core` | `DiditSDKCore` | `DiditSDK-Core.dSYM.zip` |
+| `AutoDetection` | `DiditSDKAutoDetection` | `DiditSDK-AutoDetection.dSYM.zip` |
+| `NFC` | `DiditSDKNFC` | `DiditSDK-NFC.dSYM.zip` |
+
+Each archive contains `ios-device/DiditSDK.framework.dSYM` and `ios-simulator/DiditSDK.framework.dSYM`.
+Crash reports from real devices and from the App Store need the `ios-device` bundle.
+
+Confirm the symbols match the binary you shipped before uploading them.
+The UUID printed here must equal the one Xcode reports as missing:
+
+```sh
+dwarfdump --uuid ios-device/DiditSDK.framework.dSYM
+```
+
+**Crashlytics.** Upload the device dSYM alongside your own:
+
+```sh
+/path/to/Pods/FirebaseCrashlytics/upload-symbols \
+  -gsp GoogleService-Info.plist -p ios ios-device/DiditSDK.framework.dSYM
+```
+
+**App Store Connect / Xcode Organizer.** Copy the device dSYM into your `.xcarchive`'s `dSYMs/` directory before uploading, or drag it into Xcode's Organizer alongside the archive.
+
+This also clears the "missing dSYM" warning Xcode's archive validation raises for `DiditSDK.framework`.
+That warning never blocked the upload; it only meant crashes inside the SDK could not be symbolicated.
+
+Releases `4.5.3` and earlier predate these assets and have no dSYM published.
+If you need symbols for an older pinned version, open an issue with the UUID from the validation warning.
+
 ## Migrating from 3.x to 4.x
 
 The install surface is split into four variants. Most integrations keep working without code changes; one path has a meaningful behavior change.
