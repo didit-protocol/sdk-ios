@@ -538,7 +538,14 @@ dwarfdump --uuid ios-device/DiditSDK.framework.dSYM
   -gsp GoogleService-Info.plist -p ios ios-device/DiditSDK.framework.dSYM
 ```
 
-**App Store Connect / Xcode Organizer.** Copy the device dSYM into your `.xcarchive`'s `dSYMs/` directory before uploading, or drag it into Xcode's Organizer alongside the archive.
+**App Store Connect.** Copy the device dSYM into your `.xcarchive`'s `dSYMs/` directory *before* uploading the build:
+
+```sh
+cp -R ios-device/DiditSDK.framework.dSYM \
+  ~/Library/Developer/Xcode/Archives/<date>/<YourApp>.xcarchive/dSYMs/
+```
+
+This has to happen pre-upload. App Store Connect symbolicates using the dSYMs that shipped with the build, and there is no supported way to attach a third-party dSYM to a build that is already uploaded. If you shipped without it, symbolicate the crash locally with `atos` against the matching `dSYM.zip` instead.
 
 This also clears the "missing dSYM" warning Xcode's archive validation raises for `DiditSDK.framework`.
 That warning never blocked the upload; it only meant crashes inside the SDK could not be symbolicated.
