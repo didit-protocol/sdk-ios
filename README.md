@@ -510,7 +510,8 @@ struct CustomView: View {
 ## Debug Symbols (dSYMs)
 
 The shipped `DiditSDK.framework` binary is stripped, so crash reports inside the SDK arrive as raw addresses unless you supply its debug symbols.
-Every release publishes a `dSYM.zip` asset next to the XCFramework for exactly this purpose.
+Every release **after `4.5.3`** publishes a `dSYM.zip` asset next to the XCFramework for exactly this purpose.
+`4.5.3` and earlier have none, so if that is your pinned version there is nothing to download yet - see the note at the end of this section.
 
 Download the one matching the variant you install, from the same [release](https://github.com/didit-protocol/sdk-ios/releases) as your pinned version:
 
