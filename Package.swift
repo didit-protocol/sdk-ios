@@ -2,7 +2,7 @@
 
 import PackageDescription
 
-let version = "4.5.4"
+let version = "4.6.0"
 let releaseURL = "https://github.com/didit-protocol/sdk-ios/releases/download/\(version)"
 
 let package = Package(
@@ -20,27 +20,27 @@ let package = Package(
         .binaryTarget(
             name: "DiditSDKAllBinary",
             url: "\(releaseURL)/DiditSDK.xcframework.zip",
-            checksum: "fbafa4200fea0e7db499a70228bacdd241459305e9c2821d701bd479948c6cdc"
+            checksum: "f92312cc921c53fb06ae6c5e938548df48a9ed0927ab420a6bbb7eddba0953be"
         ),
         .binaryTarget(
             name: "DiditSDKCoreBinary",
             url: "\(releaseURL)/DiditSDK-Core.xcframework.zip",
-            checksum: "e89643e9ebd3065ea12b96c5bb2f3364ad11fbd483bbd07a9d596ca20999ad6e"
+            checksum: "dd9a4ef89a9e97cd619f59664e7d4722e593febe14e1a5b41e28f9846d5f8dee"
         ),
         .binaryTarget(
             name: "DiditSDKAutoDetectionBinary",
             url: "\(releaseURL)/DiditSDK-AutoDetection.xcframework.zip",
-            checksum: "b69328dd076d114fb5dddca5d388f3a8ede1db664ab0f2bc79af00fb76aabdc8"
+            checksum: "87464ad3c71bdf6bf92792585cb44244673cd10477100b3e4ad09975b0d264ac"
         ),
         .binaryTarget(
             name: "DiditSDKNFCBinary",
             url: "\(releaseURL)/DiditSDK-NFC.xcframework.zip",
-            checksum: "086f83c445dba3efe88a07db8b9c837b370e375a725f30c4a476dad5cd842d76"
+            checksum: "6bcb1302fc600e140ac7d6a22930c343e267d0ea797512a03a66ccc787219f9d"
         ),
         .binaryTarget(
             name: "OpenSSLBinary",
             url: "\(releaseURL)/OpenSSL.xcframework.zip",
-            checksum: "1f99c69ddd984922aefc71db00d9d9deffd7eb682b2453241d92cc83218e2552"
+            checksum: "869eacce7b98e1e4f9705c7470235a15d2903b1764f7fe224bf7b15554e46fb2"
         )
     ]
 )
