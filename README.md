@@ -21,12 +21,12 @@ Starting with `4.0.0` the SDK is split into four installable variants so apps on
 
 | Variant | NFC passport reading | MediaPipe auto-detection | Device-slice Mach-O | Use when |
 |---------|----------------------|--------------------------|--------------------:|----------|
-| `Core` | – | – | **~6 MB** | smallest footprint, manual capture only |
-| `NFC` | ✓ | – | ~7 MB *(plus OpenSSL)* | passport chip reading without auto capture |
-| `AutoDetection` | – | ✓ | ~37 MB | auto capture without passport chip reading |
-| `All` | ✓ | ✓ | ~38 MB *(plus OpenSSL)* | every feature (default subspec) |
+| `Core` | – | – | **~10 MB** | smallest footprint, manual capture only |
+| `NFC` | ✓ | – | ~10.5 MB *(plus OpenSSL, ~4 MB)* | passport chip reading without auto capture |
+| `AutoDetection` | – | ✓ | ~23 MB | auto capture without passport chip reading |
+| `All` | ✓ | ✓ | ~23 MB *(plus OpenSSL, ~4 MB)* | every feature (default subspec) |
 
-Numbers above are the `ios-arm64` slice Mach-O — the binary that actually ships in the IPA. MediaPipe (the auto-detection ML runtime) accounts for ~32 MB of that; picking `Core` or `NFC` removes it entirely and brings the SDK's IPA contribution to single-digit MB. NFC adds `NFCPassportReader` + `OpenSSL.xcframework`, both lightweight compared to MediaPipe. Sizes are measured against the 4.0.0 release and may shift by a few percent per release; the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page records the authoritative numbers.
+Numbers above are the `ios-arm64` slice Mach-O — the binary that actually ships in the IPA — measured against the 4.5.4 release; they may shift by a few percent per release, and the [Releases](https://github.com/didit-protocol/sdk-ios/releases) page records the authoritative numbers. MediaPipe (the auto-detection ML runtime) accounts for ~13 MB of that; picking `Core` or `NFC` removes it entirely and brings the SDK's IPA contribution to around 10 MB. The detection models themselves are downloaded at runtime and cached, so they never count against your app's download size. NFC adds `NFCPassportReader` + `OpenSSL.xcframework`, both lightweight compared to MediaPipe. The App Store further compresses the binary for delivery, so the over-the-air cost is lower than the raw Mach-O size; use App Store Connect's app size report for the exact per-device delta.
 
 The `AutoDetection` and `NFC` subspecs depend on `Core`; `All` depends on both. Pick exactly one subspec in your `Podfile` and exactly one library product in your `Package.swift`.
 
