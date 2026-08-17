@@ -50,15 +50,22 @@ jobs:
             -skipPackagePluginValidation
 
   pod-lint:
-    name: CocoaPods spec lint
+    name: CocoaPods spec lint (${{ matrix.subspec }})
     runs-on: macos-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        subspec: [Core, AutoDetection, NFC, All]
     steps:
       - uses: actions/checkout@v4
 
       # Validates the podspec against the released DiditSDK-CocoaPods.zip:
       # asset downloadable, vendored framework paths exist, deployment
       # targets consistent. Interface compilation is covered by spm-consumer
-      # (same xcframeworks).
-      - name: Lint podspec
-        run: pod spec lint DiditSDK.podspec --allow-warnings
+      # (same xcframeworks). Linted per subspec because the root spec floor
+      # is iOS 13 while All/NFC require 15 - a plain `pod spec lint`
+      # validates the default subspec (All) against the 13.0 floor and can
+      # never pass (same reason mobile-sdks CI lints per subspec).
+      - name: Lint podspec subspec
+        run: pod spec lint DiditSDK.podspec --subspec=DiditSDK/${{ matrix.subspec }} --allow-warnings
