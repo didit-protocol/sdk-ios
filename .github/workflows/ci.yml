@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Both jobs consume the RELEASED binaries referenced by Package.swift /
+# DiditSDK.podspec. On the version-bump commit that lands BEFORE the GitHub
+# release assets are uploaded, they fail by design - re-run the workflow
+# (workflow_dispatch) once the release is published to prove the artifacts
+# actually work for consumers.
+jobs:
+  spm-consumer:
+    name: SPM consumer build (${{ matrix.product }})
+    runs-on: macos-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - product: DiditSDK
+            target: ConsumerAll
+          - product: DiditSDKCore
+            target: ConsumerCore
+          - product: DiditSDKAutoDetection
+            target: ConsumerAutoDetection
+          - product: DiditSDKNFC
+            target: ConsumerNFC
+    steps:
+      - uses: actions/checkout@v4
+
+      # Compiles a real `import DiditSDK` against the released xcframework:
+      # the tripwire for .swiftinterface breakage (the 4.7.0 "no such module
+      # 'TensorFlowLite'" class), bad checksums, and missing release assets.
+      - name: Build consumer target against the released binaries
+        working-directory: ci/ConsumerSmoke
+        run: |
+          xcodebuild build \
+            -scheme ${{ matrix.target }} \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipPackagePluginValidation
+
+  pod-lint:
+    name: CocoaPods spec lint (${{ matrix.subspec }})
+    runs-on: macos-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        subspec: [Core, AutoDetection, NFC, All]
+    steps:
+      - uses: actions/checkout@v4
+
+      # Validates the podspec against the released DiditSDK-CocoaPods.zip:
+      # asset downloadable, vendored framework paths exist, deployment
+      # targets consistent. Interface compilation is covered by spm-consumer
+      # (same xcframeworks). Linted per subspec because the root spec floor
+      # is iOS 13 while All/NFC require 15 - a plain `pod spec lint`
+      # validates the default subspec (All) against the 13.0 floor and can
+      # never pass (same reason mobile-sdks CI lints per subspec).
+      - name: Lint podspec subspec
+        run: pod spec lint DiditSDK.podspec --subspec=DiditSDK/${{ matrix.subspec }} --allow-warnings
