@@ -92,7 +92,7 @@ Skip this section unless you install the `NFC` or `All` variant.
 
 > **Simulator Limitation:** The `NFC` and `All` variants link CoreNFC. Since Xcode 12, there is a bug where `libnfshared.dylib` is missing from simulators. Refer to [this Stack Overflow thread](https://stackoverflow.com/questions/63915728/xcode12-corenfc-simulator-library-not-loaded) for a solution to this problem. This does not apply to the `Core` or `AutoDetection` variants.
 
-> **App Store Review:** If you install the `NFC` or `All` variant, Apple may ask you to provide a video demonstrating NFC usage because NFC-related code is part of the SDK binary. You can download a video demonstrating our NFC feature to submit to Apple here: [Download NFC Demo Video](https://business.didit.me/videos/passport-nfc.mp4)
+> **App Store Review:** If you install the `NFC` or `All` variant, Apple may ask you to provide a video demonstrating NFC usage because NFC-related code is part of the SDK binary. Request our NFC demo video to submit to Apple from [support@didit.me](mailto:support@didit.me).
 
 ## Installation
 
