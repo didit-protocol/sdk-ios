@@ -21,12 +21,12 @@ Starting with `4.0.0` the SDK is split into four installable variants so apps on
 
 | Variant | NFC passport reading | Auto-detection | Device-slice Mach-O | Use when |
 |---------|----------------------|--------------------------|--------------------:|----------|
-| `Core` | – | – | **~10.5 MB** | smallest footprint, manual capture only |
-| `NFC` | ✓ | – | ~11.1 MB *(plus OpenSSL, ~4 MB)* | passport chip reading without auto capture |
-| `AutoDetection` | – | ✓ | ~15.3 MB | auto capture without passport chip reading |
-| `All` | ✓ | ✓ | ~15.9 MB *(plus OpenSSL, ~4 MB)* | every feature (default subspec) |
+| `Core` | – | – | **~11.1 MB** | smallest footprint, manual capture only |
+| `NFC` | ✓ | – | ~11.7 MB *(plus OpenSSL, ~4 MB)* | passport chip reading without auto capture |
+| `AutoDetection` | – | ✓ | ~16.0 MB | auto capture without passport chip reading |
+| `All` | ✓ | ✓ | ~16.6 MB *(plus OpenSSL, ~4 MB)* | every feature (default subspec) |
 
-Numbers above are the `ios-arm64` slice Mach-O, measured from release 4.7.6.
+Numbers above are the `ios-arm64` slice Mach-O, measured from release 4.8.0.
 The detection models are downloaded at runtime and cached, so they do not contribute to the app bundle size.
 Core and NFC omit the automatic-capture ML runtime.
 NFC and All additionally embed `OpenSSL.xcframework`.
@@ -111,7 +111,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.7.6")
+    .package(url: "https://github.com/didit-protocol/sdk-ios.git", from: "4.8.0")
 ],
 targets: [
     .target(
