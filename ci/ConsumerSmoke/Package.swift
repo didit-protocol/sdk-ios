@@ -17,7 +17,12 @@ let package = Package(
         .library(name: "ConsumerAll", targets: ["ConsumerAll"]),
         .library(name: "ConsumerCore", targets: ["ConsumerCore"]),
         .library(name: "ConsumerAutoDetection", targets: ["ConsumerAutoDetection"]),
-        .library(name: "ConsumerNFC", targets: ["ConsumerNFC"])
+        .library(name: "ConsumerNFC", targets: ["ConsumerNFC"]),
+        .library(name: "ConsumerAllLocation", targets: ["ConsumerAllLocation"]),
+        .library(name: "ConsumerCoreLocation", targets: ["ConsumerCoreLocation"]),
+        .library(name: "ConsumerNFCLocation", targets: ["ConsumerNFCLocation"]),
+        .library(name: "ConsumerSignals", targets: ["ConsumerSignals"]),
+        .library(name: "ConsumerAuth", targets: ["ConsumerAuth"])
     ],
     dependencies: [
         .package(name: "DiditSDK", path: "../..")
@@ -38,6 +43,26 @@ let package = Package(
         .target(
             name: "ConsumerNFC",
             dependencies: [.product(name: "DiditSDKNFC", package: "DiditSDK")]
+        ),
+        .target(
+            name: "ConsumerAllLocation",
+            dependencies: [.product(name: "DiditSDKLocation", package: "DiditSDK")]
+        ),
+        .target(
+            name: "ConsumerCoreLocation",
+            dependencies: [.product(name: "DiditSDKCoreLocation", package: "DiditSDK")]
+        ),
+        .target(
+            name: "ConsumerNFCLocation",
+            dependencies: [.product(name: "DiditSDKNFCLocation", package: "DiditSDK")]
+        ),
+        .target(
+            name: "ConsumerSignals",
+            dependencies: [.product(name: "DiditSDKSignals", package: "DiditSDK")]
+        ),
+        .target(
+            name: "ConsumerAuth",
+            dependencies: [.product(name: "DiditAuth", package: "DiditSDK")]
         )
     ]
 )
