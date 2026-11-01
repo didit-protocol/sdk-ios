@@ -17,22 +17,25 @@ A lightweight iOS SDK for identity verification. Server-driven, minimal configur
 
 ## SDK Variants
 
-Starting with `4.0.0` the SDK is split into four installable variants so apps only pay the binary cost of features they actually use.
+The SDK ships in installable variants so apps only pay for the features they use. Since `4.10.0` every variant includes auto capture.
 
-| Variant | NFC passport reading | Auto-detection | Device-slice Mach-O | Use when |
-|---------|----------------------|--------------------------|--------------------:|----------|
-| `Core` | – | – | **~11.1 MB** | smallest footprint, manual capture only |
-| `NFC` | ✓ | – | ~11.7 MB *(plus OpenSSL, ~4 MB)* | passport chip reading without auto capture |
-| `AutoDetection` | – | ✓ | ~16.0 MB | auto capture without passport chip reading |
-| `All` | ✓ | ✓ | ~16.6 MB *(plus OpenSSL, ~4 MB)* | every feature (default subspec) |
+| Variant | NFC passport reading | Auto capture | Location verification | Use when |
+|---------|----------------------|--------------|-----------------------|----------|
+| `Core` | – | ✓ | – | smallest footprint |
+| `NFC` | ✓ | ✓ | – | passport chip reading |
+| `AutoDetection` | – | ✓ | – | deprecated, identical to `Core`; switch to `Core` |
+| `All` | ✓ | ✓ | – | every feature (default subspec) |
+| `Core-Location` | – | ✓ | ✓ | `Core` with the Location verification step |
+| `NFC-Location` | ✓ | ✓ | ✓ | `NFC` with the Location verification step |
+| `All-Location` | ✓ | ✓ | ✓ | `All` with the Location verification step |
 
-Numbers above are the `ios-arm64` slice Mach-O, measured from release 4.9.0.
+What each variant adds to an app, measured per release: [iOS SDK installation](https://docs.didit.me/integration/native-sdks/ios-sdk#installation).
 The detection models are downloaded at runtime and cached, so they do not contribute to the app bundle size.
-Core and NFC omit the automatic-capture ML runtime.
+Only the Location variants link Core Location; each carries the privacy manifest for the location it collects.
 NFC and All additionally embed `OpenSSL.xcframework`.
 App Store delivery compresses these binaries; use App Store Connect's app size report for the exact per-device download size.
 
-The `AutoDetection` and `NFC` subspecs depend on `Core`; `All` depends on both. Pick exactly one subspec in your `Podfile` and exactly one library product in your `Package.swift`.
+Each subspec and library product is one complete prebuilt framework: pick exactly one subspec in your `Podfile` and exactly one library product in your `Package.swift`.
 
 ## Permissions
 
@@ -131,8 +134,13 @@ Pick exactly one library product to match your chosen variant:
 | `AutoDetection` | `DiditSDKAutoDetection` |
 | `NFC` | `DiditSDKNFC` |
 | `All` (default) | `DiditSDK` |
+| `Core-Location` | `DiditSDKCoreLocation` |
+| `NFC-Location` | `DiditSDKNFCLocation` |
+| `All-Location` | `DiditSDKLocation` |
+| `Signals` (device signals and event submission only) | `DiditSDKSignals` |
+| `Auth` (authentication only, iOS 15+) | `DiditAuth` |
 
-In all cases your app code imports the same module: `import DiditSDK`.
+Every product except `DiditAuth` is imported as `import DiditSDK`. The verification variants include signals and authentication; `Auth` on its own is imported as `import DiditAuth`.
 
 > **Swift Package Manager does not enforce the iOS 15 floor for you.** `Package.swift` declares
 > `platforms: [.iOS(.v13)]` for the whole package — SwiftPM has no per-product platform
@@ -152,6 +160,11 @@ pod 'DiditSDK/All',           :podspec => podspec_url
 # pod 'DiditSDK/Core',          :podspec => podspec_url   # platform :ios, '13.0'
 # pod 'DiditSDK/AutoDetection', :podspec => podspec_url   # platform :ios, '13.0'
 # pod 'DiditSDK/NFC',           :podspec => podspec_url   # platform :ios, '15.0'
+# pod 'DiditSDK/Core-Location', :podspec => podspec_url   # platform :ios, '13.0', Core with Location verification
+# pod 'DiditSDK/NFC-Location',  :podspec => podspec_url   # platform :ios, '15.0', NFC with Location verification
+# pod 'DiditSDK/All-Location',  :podspec => podspec_url   # platform :ios, '15.0', All with Location verification
+# pod 'DiditSDK/Signals',       :podspec => podspec_url   # platform :ios, '13.0', device signals and events only
+# pod 'DiditSDK/Auth',          :podspec => podspec_url   # platform :ios, '15.0', authentication only
 ```
 
 Pick exactly one subspec. `Core` and `AutoDetection` deploy down to iOS 13; `NFC` and `All` require iOS 15 because of `NFCPassportReader`.
@@ -184,6 +197,11 @@ Each release publishes one XCFramework per variant. Pick the variant you want, d
 | `AutoDetection` | `DiditSDK-AutoDetection.xcframework.zip` |
 | `NFC` | `DiditSDK-NFC.xcframework.zip` + `OpenSSL.xcframework.zip` |
 | `All` | `DiditSDK.xcframework.zip` + `OpenSSL.xcframework.zip` |
+| `Core-Location` | `DiditSDK-Core-Location.xcframework.zip` |
+| `NFC-Location` | `DiditSDK-NFC-Location.xcframework.zip` + `OpenSSL.xcframework.zip` |
+| `All-Location` | `DiditSDK-Location.xcframework.zip` + `OpenSSL.xcframework.zip` |
+| `Signals` | `DiditSDK-Signals.xcframework.zip` |
+| `Auth` | `DiditAuth.xcframework.zip` |
 
 Extract each zip and set the embed option to **Embed & Sign** under **Frameworks, Libraries, and Embedded Content**.
 
@@ -578,7 +596,7 @@ The install surface is split into four variants. Most integrations keep working 
 
 ### 4.1.0
 - Native wallet-ownership verification flow (method picker, message signing, screenshot upload, self-declaration, satoshi/micro-deposit test, completion/expired) styled like the verification process, launched natively for the `wallet_ownership` action via the public `DiditSdk.presentWalletOwnership(widgetToken:)`.
-- WalletConnect message signing behind an optional `DiditSDK/WalletConnect` subspec (reown-swift / ReownAppKit, iOS 15+): EVM `personal_sign` and Solana `solana_signMessage`, enabled with `DiditSdk.enableWalletConnect(projectId:appGroupIdentifier:)`. The core SDK stays iOS 13 and ships a no-op signer by default, so apps that don't need signing are unaffected.
+- WalletConnect message signing behind an optional `DiditSDK/WalletConnect` subspec (reown-swift / ReownAppKit, iOS 15+): EVM `personal_sign` and Solana `solana_signMessage`, enabled with `DiditSdk.enableWalletConnect(projectId:appGroupIdentifier:)`. The core SDK stays iOS 13 and ships a no-op signer by default, so apps that don't need signing are unaffected. **Correction:** the subspec builds from the mobile-sdks source only; this podspec and the Swift Package Manager products have never included it. Since 4.10.0, without a signer the flow does not offer message signing, and a transaction opens the web flow when a proof allows only message signing.
 - Transaction submission: native `submitTransaction` / `getTransaction`. A `wallet_ownership` required-action auto-launches the native flow; a `verification_session` action is returned on `result.actionRequired` (type, url, sessionId, sessionToken, status) for your existing `startVerification` / `.diditVerification` integration. Concurrent submissions are de-duplicated so a second call can't clobber an in-flight verification.
 - New document quality-check screen validates the captured document (framing/crop) before it is uploaded.
 - Full-color Didit logo on the verification welcome and wallet-ownership entry screens (the muted mark stays in the "Secured by" footer), and white-label logos now support SVG sources.

@@ -1,11 +1,16 @@
 Pod::Spec.new do |s|
   s.name             = 'DiditSDK'
-  s.version          = '4.9.1'
+  s.version          = '4.11.0'
   s.summary          = 'Didit Identity Verification SDK for iOS'
   s.description      = <<-DESC
-    Modular identity verification SDK. Install Core for the bare minimum,
-    add AutoDetection for MediaPipe-based auto capture, add NFC for passport
-    chip reading, or install All for the complete feature set.
+    Modular identity verification SDK. Every verification variant (Core, NFC,
+    All) includes auto capture through the Didit tiny detectors. Install Core
+    for the smallest build, NFC for passport chip reading, or All for the
+    complete feature set; AutoDetection is deprecated and identical to Core.
+    Core-Location, NFC-Location and All-Location are those variants with the
+    Location verification step (Core Location). Auth is authentication on its
+    own (DiditAuth) and Signals is device signals and event submission on their
+    own, with no verification UI; every verification variant includes both.
   DESC
 
   s.homepage         = 'https://github.com/didit-protocol/sdk-ios'
@@ -45,6 +50,7 @@ SOFTWARE.
 
   shared_frameworks      = ['UIKit', 'SwiftUI', 'AVFoundation']
   passport_frameworks    = ['CoreNFC']
+  location_frameworks    = ['CoreLocation']
 
   s.subspec 'Core' do |core|
     core.vendored_frameworks = 'Core/DiditSDK.xcframework'
@@ -66,5 +72,39 @@ SOFTWARE.
     all.ios.deployment_target = '15.0'
     all.vendored_frameworks   = 'All/DiditSDK.xcframework', 'All/OpenSSL.xcframework'
     all.frameworks            = shared_frameworks + passport_frameworks
+  end
+
+  # The verification variants with the Location module compiled in (the INCLUDE_LOCATION=true
+  # builds): Core Location linked, and the module's privacy manifest in every framework slice.
+  # Each replaces its plain variant, like every subspec here: pick exactly one.
+  s.subspec 'Core-Location' do |core|
+    core.vendored_frameworks = 'Core-Location/DiditSDK.xcframework'
+    core.frameworks          = shared_frameworks + location_frameworks
+  end
+
+  s.subspec 'NFC-Location' do |nfc|
+    nfc.ios.deployment_target = '15.0'
+    nfc.vendored_frameworks   = 'NFC-Location/DiditSDK.xcframework', 'NFC-Location/OpenSSL.xcframework'
+    nfc.frameworks            = shared_frameworks + passport_frameworks + location_frameworks
+  end
+
+  s.subspec 'All-Location' do |all|
+    all.ios.deployment_target = '15.0'
+    all.vendored_frameworks   = 'All-Location/DiditSDK.xcframework', 'All-Location/OpenSSL.xcframework'
+    all.frameworks            = shared_frameworks + passport_frameworks + location_frameworks
+  end
+
+  # Device signals and event submission on their own, with no verification UI:
+  # `import DiditSDK`, then `DiditSignals`.
+  s.subspec 'Signals' do |signals|
+    signals.vendored_frameworks = 'Signals/DiditSDK.xcframework'
+    signals.frameworks          = ['UIKit', 'AVFoundation', 'CryptoKit', 'DeviceCheck', 'Security']
+  end
+
+  # Authentication on its own: `import DiditAuth`.
+  s.subspec 'Auth' do |auth|
+    auth.ios.deployment_target = '15.0'
+    auth.vendored_frameworks   = 'Auth/DiditAuth.xcframework'
+    auth.frameworks            = ['UIKit', 'AVFoundation', 'AuthenticationServices', 'CryptoKit', 'DeviceCheck', 'Security']
   end
 end
