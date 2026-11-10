@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DiditSDK'
-  s.version          = '4.14.0'
+  s.version          = '4.14.1'
   s.summary          = 'Didit Identity Verification SDK for iOS'
   s.description      = <<-DESC
     Modular identity verification SDK. Every verification variant (Core, NFC,
